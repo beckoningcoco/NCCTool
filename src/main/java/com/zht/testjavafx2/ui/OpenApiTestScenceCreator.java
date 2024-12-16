@@ -108,7 +108,7 @@ public class OpenApiTestScenceCreator {
         // 创建 ComboBox 并设置提示文本
         ComboBox<String> choseAppBox = new ComboBox<>();
         // 设置ComboBox的大小
-        choseAppBox.setPrefWidth(100);  // 设置首选宽度为200
+        choseAppBox.setPrefWidth(120);  // 设置首选宽度为200
         choseAppBox.setPrefHeight(27);   // 设置首选高度为40
         choseAppBox.setPromptText("请选择应用");
 
@@ -155,8 +155,8 @@ public class OpenApiTestScenceCreator {
                     ipList);
             ObservableList<String> urlOptions = FXCollections.observableArrayList(
                     urlList);
+            ipComBox.setItems(ipOptions);
             if (ipOptions.size() > 0) {
-                ipComBox.setItems(ipOptions);
                 ipComBox.setValue(ipOptions.get(0));
                 selectedIp = ipOptions.get(0);
             }
