@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <apps>
+        <app>
+            <appName>测试app应用</appName>
+            <clientId>AABBCC</clientId>
+            <clientSecret>541WWfeab7297f447f9637</clientSecret>
+            <pubKey>TEST</pubKey>
+            <secretLevel>L9</secretLevel>
+            <busiCenter>002</busiCenter>
+            <grantType>client_credentials</grantType>
+            <sender>default</sender>
+            <pkGroup>0001O110000000000F2X</pkGroup>
+            <datasource>NCC2111ZS</datasource>
+            <groupCode>20</groupCode>
+            <userName>ABC</userName>
+            <pwd>000000</pwd>
+
+            <ips>
+                <ip>127.0.0.1:8080</ip>
+                <ip>192.168.3.7:9293</ip>
+                <ip>192.168.3.103:9093</ip>
+            </ips>
+
+            <urls>
+                <url>ic/whstrans/save</url>
+                <url>ic/whstrans/operation/save</url>
+                <url>ic/transformbill/save</url>
+                <url>ic/generalin/add</url>
+            </urls>
+        </app>
+    </apps>
+</root>

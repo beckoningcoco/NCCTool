@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <apps>
+        <app>
+            <appName>金隅涂料</appName>
+            <clientId>JYTL</clientId>
+            <clientSecret>541feab7297f447f9637</clientSecret>
+            <pubKey>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyXNPaaZb8OXU9NoUSPId7z/N8Ug0gE903hLjt5Q7FuGmQgTI2lPJPwNwSkr3h+eMi9IAuP3L94Wa3E6VKbdjx+CpLLCxldHXoxnnF4F10EDlWvjbuXHQLH2Y+44dH5775+s4CYWoPouuiSCWj6/CMAeV+KJ4W1dBZ/h8JhOhh2pn6gWupE3QaH0kmbglhse9tSZhnKKJSl0ojefFmTJAaIgIO0rQLaoxGKO1qEscjhyAFlh+j1oG0oez1RswnCdGu+aGMknKHZY4X1cx71J9gF0cGfqJ1cwBKMaI6znsT4h+n6Tii97YlFdkFWyYEeOaX9CzYeWZ7kH7ecchuEicqQIDAQAB</pubKey>
+            <secretLevel>L0</secretLevel>
+            <busiCenter>001</busiCenter>
+            <grantType>client_credentials</grantType>
+            <sender>default</sender>
+            <pkGroup>0001O110000000000FVX</pkGroup>
+            <datasource>NCC2111ZS</datasource>
+            <groupCode>10</groupCode>
+            <userName>DAI</userName>
+            <pwd>1234qwer!</pwd>
+
+            <ips>
+                <ip>127.0.0.1:8080</ip>
+                <ip>192.168.3.7:9293</ip>
+                <ip>192.168.3.103:9093</ip>
+            </ips>
+
+            <urls>
+                <url>ic/whstrans/save</url>
+                <url>ic/whstrans/operation/save</url>
+                <url>ic/transformbill/save</url>
+                <url>ic/generalin/add</url>
+            </urls>
+        </app>
+    </apps>
+</root>
