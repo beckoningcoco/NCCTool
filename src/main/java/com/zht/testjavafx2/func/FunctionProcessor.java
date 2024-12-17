@@ -33,8 +33,7 @@ public class FunctionProcessor {
 
                 // 获取数据库连接
                 conn = DriverManager.getConnection(url, user, password);
-                if (conn != null
-                ) {
+                if (conn != null) {
                     System.out.println("成功连接到数据库！"
                     );
                 }

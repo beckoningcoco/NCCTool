@@ -1,0 +1,7 @@
+.button {
+    -fx-background-color: #ffffff; /* 默认背景颜色 */
+}
+
+.button:hover {
+    -fx-background-color: #a79f9f; /* 悬停时的背景颜色 */
+}

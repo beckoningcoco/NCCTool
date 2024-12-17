@@ -5,8 +5,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 @SuppressWarnings("all")
@@ -36,6 +34,7 @@ public class UICreator {
             ExportNodeScenceCreator.createScence(stage , borderPane);
             borderPane.setTop(menuBar);
             exportNodescence = new Scene(borderPane, 800, 600);
+            exportNodescence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(exportNodescence);
             System.out.println("切换菜单 exportNodescence ");
 
@@ -46,6 +45,7 @@ public class UICreator {
             OpenApiTestScenceCreator.createScence(stage,openapiPane);
             openapiPane.setTop(menuBar);
             openapiScence = new Scene(openapiPane, 800, 600);
+            openapiScence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(openapiScence);
             System.out.println("切换菜单 openapiScence ");
         });
@@ -56,6 +56,7 @@ public class UICreator {
             SQLScriptScenceCreator.createScence(stage,openapiPane);
             openapiPane.setTop(menuBar);
             SQLScriptScence = new Scene(openapiPane, 800, 600);
+            SQLScriptScence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(SQLScriptScence);
             System.out.println("切换菜单 SQLScriptScence ");
         });
@@ -76,7 +77,7 @@ public class UICreator {
         SQLScriptScenceCreator.createScence(stage,sqlScriptPane);
         sqlScriptPane.setTop(menuBar);
         SQLScriptScence = new Scene(sqlScriptPane, 800, 600);
-
+        SQLScriptScence.getStylesheets().add(getClass().getResource("/com/zht/testjavafx2/btnStyle.css").toExternalForm());
         // 设置初始场景
         primaryStage.setTitle("NCC开发工具");
         primaryStage.setScene(SQLScriptScence);

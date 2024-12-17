@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root >
+    <Conns>
+        <conn>
+            <connName>123</connName>
+            <dbType>3</dbType>
+            <servername>4</servername>
+            <ip>324</ip>
+            <port>432</port>
+            <username>324</username>
+            <password>324</password>
+        </conn>
+    </Conns>
+</root>

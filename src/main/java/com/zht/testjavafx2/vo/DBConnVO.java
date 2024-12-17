@@ -10,7 +10,7 @@ public class DBConnVO {
     private String dbType ;
 
     //服务名
-    private String ervername ;
+    private String servername ;
     //ip
     private String ip ;
     //端口
@@ -44,12 +44,12 @@ public class DBConnVO {
         this.dbType = dbType;
     }
 
-    public String getErvername() {
-        return ervername;
+    public String getServername() {
+        return servername;
     }
 
-    public void setErvername(String ervername) {
-        this.ervername = ervername;
+    public void setServername(String ervername) {
+        this.servername = ervername;
     }
 
     public String getIp() {
@@ -129,7 +129,7 @@ public class DBConnVO {
         return "DBConnVO{" +
                 "connName='" + connName + '\'' +
                 ", dbType='" + dbType + '\'' +
-                ", ervername='" + ervername + '\'' +
+                ", servername='" + servername + '\'' +
                 ", ip='" + ip + '\'' +
                 ", port='" + port + '\'' +
                 ", username='" + username + '\'' +

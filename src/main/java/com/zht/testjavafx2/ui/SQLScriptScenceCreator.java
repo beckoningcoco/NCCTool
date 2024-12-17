@@ -1,5 +1,6 @@
 package com.zht.testjavafx2.ui;
 
+import com.zht.testjavafx2.func.SQLScriptFuncProcessor;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -62,7 +63,7 @@ public class SQLScriptScenceCreator {
         addDBButton.setOnAction(e -> {
 
             //创建  新增界面
-
+            SQLScriptFuncProcessor.ctrateGrid();
             //测试连接是否通过
 
             //持久化到xml
