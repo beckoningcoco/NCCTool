@@ -13,8 +13,7 @@ import javafx.stage.Stage;
 public class UICreator {
 
     private static Stage primaryStage;
-    private static Scene exportNodescence, openapiScence;
-
+    private static Scene exportNodescence, openapiScence ,SQLScriptScence;
     private static MenuBar menuBar ;
 
     public void ctrateUI(Stage stage){
@@ -24,6 +23,7 @@ public class UICreator {
         Menu menu = new Menu("工具");
         MenuItem switchToScene1 = new MenuItem("导出新建节点脚本");
         MenuItem switchToScene2 = new MenuItem("测试OPENAPI");
+        MenuItem switchToScene3 = new MenuItem("导出脚本工具");
 
         //扩展菜单项
         Menu otherMenu = new Menu("其他");
@@ -50,6 +50,16 @@ public class UICreator {
             System.out.println("切换菜单 openapiScence ");
         });
 
+        switchToScene3.setOnAction(e -> {
+            //创建  导出脚本工具的界面
+            BorderPane openapiPane = new BorderPane();
+            SQLScriptScenceCreator.createScence(stage,openapiPane);
+            openapiPane.setTop(menuBar);
+            SQLScriptScence = new Scene(openapiPane, 800, 600);
+            primaryStage.setScene(SQLScriptScence);
+            System.out.println("切换菜单 SQLScriptScence ");
+        });
+
         otherItem1.setOnAction(e -> {
             System.out.println("可扩展按钮1 otherItem1 ");
         });
@@ -57,28 +67,19 @@ public class UICreator {
             System.out.println("可扩展按钮2 otherItem1 ");
         });
 
-        menu.getItems().addAll(switchToScene1, switchToScene2);
+        menu.getItems().addAll(switchToScene1, switchToScene2,switchToScene3);
         otherMenu.getItems().addAll(otherItem1, otherItem2);
         menuBar.getMenus().addAll(menu,otherMenu);
 
-        //创建  openapi工具的界面
-        BorderPane openapiPane = new BorderPane();
-        OpenApiTestScenceCreator.createScence(stage,openapiPane);
-        openapiPane.setTop(menuBar);
-        openapiScence = new Scene(openapiPane, 800, 600);
-
-
-        //创建  导出节点工具的界面
-        /*
-        BorderPane borderPane = new BorderPane();
-        ExportNodeScenceCreator.createScence(stage , borderPane);
-        borderPane.setTop(menuBar);
-        exportNodescence = new Scene(borderPane, 800, 600);
-        */
+        //创建  导出sql脚本 工具的界面
+        BorderPane sqlScriptPane = new BorderPane();
+        SQLScriptScenceCreator.createScence(stage,sqlScriptPane);
+        sqlScriptPane.setTop(menuBar);
+        SQLScriptScence = new Scene(sqlScriptPane, 800, 600);
 
         // 设置初始场景
         primaryStage.setTitle("NCC开发工具");
-        primaryStage.setScene(openapiScence);
+        primaryStage.setScene(SQLScriptScence);
 
         primaryStage.show();
 
