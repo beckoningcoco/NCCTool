@@ -26,12 +26,19 @@ public class FileUtil {
     }
 
     public static File copyResourceToFileIfNotExists(String targetFilePath) throws IOException {
-        // 加载资源为输入流
-        InputStream resource = OpenApiFuncProcessor.class.getResourceAsStream("/com/zht/testjavafx2/appregister.xml");
-        try (resource) {
-            // 创建目标文件路径
-            Path targetPath = Paths.get(targetFilePath);
-            Files.createDirectories(targetPath.getParent()); // 确保父目录存在
+        InputStream resource = null;
+        if (targetFilePath.endsWith("dbconn.xml")) {
+            resource = OpenApiFuncProcessor.class.getResourceAsStream("/com/zht/testjavafx2/dbconn.xml");
+        } else {
+            // 加载资源为输入流
+            resource = OpenApiFuncProcessor.class.getResourceAsStream("/com/zht/testjavafx2/appregister.xml");
+        }
+
+        // 创建目标文件路径
+        Path targetPath = Paths.get(targetFilePath);
+        try {
+            // 确保父目录存在
+            Files.createDirectories(targetPath.getParent());
 
             // 如果目标文件不存在，则复制资源文件到目标位置
             if (!Files.exists(targetPath)) {
@@ -43,7 +50,9 @@ public class FileUtil {
                     }
                 }
             }
-            return targetPath.toFile();
+        } catch (Exception ex) {
+            ex.fillInStackTrace();
         }
+        return targetPath.toFile();
     }
 }

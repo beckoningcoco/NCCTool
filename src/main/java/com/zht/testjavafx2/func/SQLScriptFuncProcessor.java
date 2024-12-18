@@ -1,5 +1,7 @@
 package com.zht.testjavafx2.func;
 
+import com.zht.testjavafx2.openapi.FileUtil;
+import com.zht.testjavafx2.openapi.XmlConverter;
 import com.zht.testjavafx2.vo.DBConnVO;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,19 +9,32 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("all")
 public class SQLScriptFuncProcessor {
-
+    private static final String targetFilePath = "D:/Program Files/ncc/dbconn.xml";
         public static DBConnVO ctrateGrid(){
             DBConnVO ret =  new DBConnVO();;
             // 创建一个自定义的Dialog
             Dialog<String> dialog = new Dialog<>();
-            dialog.setTitle("新增应用");
+            dialog.setTitle("新增数据连接");
 
             // 设置对话框的按钮
             ButtonType loginButtonType = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
@@ -129,7 +144,9 @@ public class SQLScriptFuncProcessor {
                     ret.setServername(db);
                     ret.setUsername(user);
                     ret.setPassword(pwd);
-
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("测试连接成功！");
+                    alert.showAndWait();
                     //将这个数据库连接信息保存到 xml
                     saveConnDataToxXml(ret);
                 } catch (SQLException e) {
@@ -137,6 +154,8 @@ public class SQLScriptFuncProcessor {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("测试连接失败:"+e.getMessage());
                     alert.showAndWait();
+                }finally {
+                    FunctionProcessor.closeConn();
                 }
             });
 
@@ -171,13 +190,40 @@ public class SQLScriptFuncProcessor {
 
             // 显示对话框并等待结果
             Optional<String> result = dialog.showAndWait();
-
             return ret;
         }
 
     private static void saveConnDataToxXml(DBConnVO ret) {
 
+        try {
+            String xmlStr = XmlConverter.convertToXml(ret);
+            xmlStr = XmlConverter.formatXml(xmlStr);
+            FileUtil.copyResourceToFileIfNotExists(targetFilePath);
+            InputStream resourceAsStream = FileUtil.getInputStreamForFile(targetFilePath);
+            Reader reader = new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
+            InputSource is = new InputSource(reader);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(is);
 
+            // 将新的 XML 字符串解析为 DocumentFragment
+            Document newDoc = dBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+            Element newElement = (Element) newDoc.getDocumentElement().cloneNode(true);
+            // 获取根元素并插入新元素
+            Element root = doc.getDocumentElement();
+            NodeList conns = root.getElementsByTagName("conns");
+            conns.item(0).appendChild(doc.importNode(newElement, true));
+
+            // 使用 Transformer 将修改后的文档写回文件
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            File file = new File(targetFilePath);
+            StreamResult result = new StreamResult(file);
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

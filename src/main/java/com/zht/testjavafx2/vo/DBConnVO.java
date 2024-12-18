@@ -1,6 +1,10 @@
 package com.zht.testjavafx2.vo;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 @SuppressWarnings("all")
+@JacksonXmlRootElement(localName = "conn")
 public class DBConnVO {
 
     //连接名称
@@ -28,6 +32,7 @@ public class DBConnVO {
     private String def5 ;
 
 
+    @JacksonXmlProperty(localName = "connName")
     public String getConnName() {
         return connName;
     }
@@ -36,6 +41,7 @@ public class DBConnVO {
         this.connName = connName;
     }
 
+    @JacksonXmlProperty(localName = "dbType")
     public String getDbType() {
         return dbType;
     }
@@ -44,14 +50,15 @@ public class DBConnVO {
         this.dbType = dbType;
     }
 
+    @JacksonXmlProperty(localName = "servername")
     public String getServername() {
         return servername;
     }
 
-    public void setServername(String ervername) {
-        this.servername = ervername;
+    public void setServername(String servername) {
+        this.servername = servername;
     }
-
+    @JacksonXmlProperty(localName = "ip")
     public String getIp() {
         return ip;
     }
@@ -59,7 +66,7 @@ public class DBConnVO {
     public void setIp(String ip) {
         this.ip = ip;
     }
-
+    @JacksonXmlProperty(localName = "port")
     public String getPort() {
         return port;
     }
@@ -67,7 +74,7 @@ public class DBConnVO {
     public void setPort(String port) {
         this.port = port;
     }
-
+    @JacksonXmlProperty(localName = "username")
     public String getUsername() {
         return username;
     }
@@ -76,6 +83,7 @@ public class DBConnVO {
         this.username = username;
     }
 
+    @JacksonXmlProperty(localName = "password")
     public String getPassword() {
         return password;
     }

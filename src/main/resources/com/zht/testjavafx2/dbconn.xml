@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root >
-    <Conns>
+    <conns>
         <conn>
             <connName>123</connName>
             <dbType>3</dbType>
@@ -10,5 +10,5 @@
             <username>324</username>
             <password>324</password>
         </conn>
-    </Conns>
+    </conns>
 </root>

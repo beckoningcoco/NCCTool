@@ -1,9 +1,13 @@
 package com.zht.testjavafx2.ui;
 
+import com.zht.testjavafx2.func.FunctionProcessor;
 import com.zht.testjavafx2.func.SQLScriptFuncProcessor;
+import com.zht.testjavafx2.vo.DBConnVO;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -11,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +25,10 @@ import java.util.Optional;
 @SuppressWarnings("all")
 public class SQLScriptScenceCreator {
 
-    public static void createScence(Stage stage , BorderPane borderPane) {
+    private static TextField dbStatus = null;
+    private static Boolean connStatus = false;
+
+    public static void createScence(Stage stage, BorderPane borderPane) {
 
         // 使用 VBox，间距为 20
         VBox vbox = new VBox(15);
@@ -40,6 +48,14 @@ public class SQLScriptScenceCreator {
         Label databaseLabel = new Label(" 连接数据库 ");
         databaseLabel.setStyle(" -fx-pref-width: 100px;-fx-padding: 5;-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Tahoma';");
         TextField databaseField = new TextField();
+        // 添加文本变化监听器
+        databaseField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //文本
+                System.out.println("数据库连接变更为:" + newValue);
+            }
+        });
         databaseField.setTranslateY(3);
         databaseField.setPrefHeight(26);
         databaseField.setPromptText("选择数据源");
@@ -63,11 +79,19 @@ public class SQLScriptScenceCreator {
         addDBButton.setOnAction(e -> {
 
             //创建  新增界面
-            SQLScriptFuncProcessor.ctrateGrid();
-            //测试连接是否通过
-
-            //持久化到xml
-
+            DBConnVO dbConnVO = SQLScriptFuncProcessor.ctrateGrid();
+            if (StringUtils.isNotBlank(dbConnVO.getConnName())) {
+                //设置文本框选中当前数据源
+                databaseField.setText(dbConnVO.getConnName());
+                //测试连接是否通过
+                try {
+                    FunctionProcessor.connDatabase(dbConnVO.getIp(), dbConnVO.getPort(), dbConnVO.getServername(), dbConnVO.getUsername(), dbConnVO.getPassword(), dbConnVO.getDbType());
+                    dbStatus.setText("成功");
+                } catch (Exception ex) {
+                    dbStatus.setText("失败");
+                    ex.fillInStackTrace();
+                }
+            }
         });
 
 
@@ -95,12 +119,27 @@ public class SQLScriptScenceCreator {
         Label dbstatusLabel = new Label(" 连接状态 ");
         dbstatusLabel.setStyle(" -fx-pref-width: 100px;-fx-padding: 5;-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Tahoma';");
         TextField dbstatusField = new TextField();
+        dbStatus = dbstatusField;
         dbstatusField.setTranslateY(3);
         dbstatusField.setTranslateX(-20);
         dbstatusField.setPrefHeight(26);
         dbstatusField.setPrefWidth(50);
         dbstatusField.setPromptText("失败");
         dbstatusField.setEditable(false);
+
+        dbstatusField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //文本
+                if ("成功".equals(newValue)) {
+                    connStatus = true;
+                } else {
+                    connStatus = false;
+                }
+                System.out.println("数据库连接状态:" + connStatus);
+            }
+        });
+
 
         // 创建一个水平分割线
         Separator separator = new Separator();
@@ -258,7 +297,7 @@ public class SQLScriptScenceCreator {
 
         });
 
-         // 创建一个水平分割线
+        // 创建一个水平分割线
         Separator separator5 = new Separator();
 
         // 导出单据转换规则
@@ -314,19 +353,16 @@ public class SQLScriptScenceCreator {
         // 创建一个水平分割线
         Separator Lastseparator = new Separator();
 
-        ruleBox.getChildren().addAll(ruleLabel,ruleSrcBillTypeField,ruleSrcTradeTypeField,ruleTarBillTypeField,ruleTarTradeTypeField,ruleButton);
-        extendBox.getChildren().addAll(extendLabel,extendField,extendfiledField,extendButton);
-        pluginBox.getChildren().addAll(pluginLabel,pluginField,execpluButton);
-        defdocBox.getChildren().addAll(defdocLabel,defdocField,execdefButton);
-        listenerBox.getChildren().addAll(listenerLabel,listenerField,checkBox,execButton);
-        databaseBox.getChildren().addAll(databaseLabel,databaseField,addDBButton,loadDBButton,dbstatusLabel,dbstatusField);
+        ruleBox.getChildren().addAll(ruleLabel, ruleSrcBillTypeField, ruleSrcTradeTypeField, ruleTarBillTypeField, ruleTarTradeTypeField, ruleButton);
+        extendBox.getChildren().addAll(extendLabel, extendField, extendfiledField, extendButton);
+        pluginBox.getChildren().addAll(pluginLabel, pluginField, execpluButton);
+        defdocBox.getChildren().addAll(defdocLabel, defdocField, execdefButton);
+        listenerBox.getChildren().addAll(listenerLabel, listenerField, checkBox, execButton);
+        databaseBox.getChildren().addAll(databaseLabel, databaseField, addDBButton, loadDBButton, dbstatusLabel, dbstatusField);
         // 将所有组件添加到 VBox 中
-        vbox.getChildren().addAll( titleBox ,databaseBox ,separator,listenerBox,separator2,defdocBox,separator3,pluginBox,separator4,extendBox,separator5,ruleBox,Lastseparator);
+        vbox.getChildren().addAll(titleBox, databaseBox, separator, listenerBox, separator2, defdocBox, separator3, pluginBox, separator4, extendBox, separator5, ruleBox, Lastseparator);
         borderPane.setCenter(vbox);
     }
 
 
-
-
-
-    }
+}

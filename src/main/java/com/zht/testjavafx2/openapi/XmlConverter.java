@@ -2,6 +2,7 @@ package com.zht.testjavafx2.openapi;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.zht.testjavafx2.vo.AppItemVO;
+import com.zht.testjavafx2.vo.DBConnVO;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
@@ -20,7 +21,15 @@ public class XmlConverter{
             return null; // 或者抛出异常、返回空字符串等
         }
     }
-
+    public static String convertToXml(DBConnVO connVO) {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            return xmlMapper.writeValueAsString(connVO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // 或者抛出异常、返回空字符串等
+        }
+    }
 
     /**
      * 格式化 XML 字符串。
