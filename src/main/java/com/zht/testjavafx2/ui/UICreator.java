@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class UICreator {
 
     private static Stage primaryStage;
-    private static Scene exportNodescence, openapiScence ,SQLScriptScence;
+    private static Scene exportNodescence, openapiScence ,SQLScriptScence,testNetPayScence;
     private static MenuBar menuBar ;
 
     public void ctrateUI(Stage stage){
@@ -22,6 +22,7 @@ public class UICreator {
         MenuItem switchToScene1 = new MenuItem("导出新建节点脚本");
         MenuItem switchToScene2 = new MenuItem("测试OPENAPI");
         MenuItem switchToScene3 = new MenuItem("导出脚本工具");
+        MenuItem switchToScene4 = new MenuItem("模拟网上支付工具");
 
         //扩展菜单项
         Menu otherMenu = new Menu("其他");
@@ -50,12 +51,22 @@ public class UICreator {
 
         switchToScene3.setOnAction(e -> {
             //创建  导出脚本工具的界面
-            BorderPane openapiPane = new BorderPane();
-            SQLScriptScenceCreator.createScence(stage,openapiPane);
-            openapiPane.setTop(menuBar);
-            SQLScriptScence = new Scene(openapiPane, 800, 600);
+            BorderPane sqlscriptPane = new BorderPane();
+            SQLScriptScenceCreator.createScence(stage,sqlscriptPane);
+            sqlscriptPane.setTop(menuBar);
+            SQLScriptScence = new Scene(sqlscriptPane, 800, 600);
             primaryStage.setScene(SQLScriptScence);
             System.out.println("切换菜单 SQLScriptScence ");
+        });
+
+        switchToScene4.setOnAction(e -> {
+            //创建  模拟网上支付 工具的 界面
+            BorderPane netPayPane = new BorderPane();
+            NetPayTestScenceCreator.createScence(stage,netPayPane);
+            netPayPane.setTop(menuBar);
+            testNetPayScence = new Scene(netPayPane, 800, 600);
+            primaryStage.setScene(testNetPayScence);
+            System.out.println("切换菜单 testNetPayScence ");
         });
 
         otherItem1.setOnAction(e -> {
@@ -65,19 +76,19 @@ public class UICreator {
             System.out.println("可扩展按钮2 otherItem1 ");
         });
 
-        menu.getItems().addAll(switchToScene1, switchToScene2,switchToScene3);
+        menu.getItems().addAll(switchToScene1, switchToScene2,switchToScene3,switchToScene4);
         otherMenu.getItems().addAll(otherItem1, otherItem2);
         menuBar.getMenus().addAll(menu,otherMenu);
 
-        //创建  导出sql脚本 工具的界面
-        BorderPane sqlScriptPane = new BorderPane();
-        SQLScriptScenceCreator.createScence(stage,sqlScriptPane);
-        sqlScriptPane.setTop(menuBar);
-        SQLScriptScence = new Scene(sqlScriptPane, 800, 600);
-        SQLScriptScence.getStylesheets().add(getClass().getResource("/com/zht/testjavafx2/btnStyle.css").toExternalForm());
+        //创建  模拟网上支付 工具的界面
+        BorderPane netPayPane = new BorderPane();
+        NetPayTestScenceCreator.createScence(stage,netPayPane);
+        netPayPane.setTop(menuBar);
+        testNetPayScence = new Scene(netPayPane, 800, 600);
+
         // 设置初始场景
         primaryStage.setTitle("NCC开发工具");
-        primaryStage.setScene(SQLScriptScence);
+        primaryStage.setScene(testNetPayScence);
 
         primaryStage.show();
 

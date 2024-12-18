@@ -12,6 +12,7 @@ module com.zht.testjavafx2 {
     requires com.google.gson;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.dataformat.xml;
+    requires DmJdbcDriver18;
     // 导出 vo 包给所有模块
     exports com.zht.testjavafx2.vo;
 
