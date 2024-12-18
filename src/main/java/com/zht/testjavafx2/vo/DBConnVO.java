@@ -142,11 +142,6 @@ public class DBConnVO {
                 ", port='" + port + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", def1='" + def1 + '\'' +
-                ", def2='" + def2 + '\'' +
-                ", def3='" + def3 + '\'' +
-                ", def4='" + def4 + '\'' +
-                ", def5='" + def5 + '\'' +
                 '}';
     }
 }

@@ -66,6 +66,8 @@ public class FunctionProcessor {
                         + e.getMessage());
                 throw new SQLException("数据库连接失败: " + e.getMessage());
             }
+        }else{
+            throw new SQLException("不支持的数据库类型");
         }
         return conn;
     }

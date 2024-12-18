@@ -37,6 +37,7 @@ import java.util.*;
 /**
  * @author zht
  */
+@SuppressWarnings("all")
 public class OpenApiFuncProcessor {
     private static final String targetFilePath = "D:/Program Files/ncc/appregister.xml";
 

@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,8 @@ import java.util.Optional;
 //导出sql脚本工具的界面
 @SuppressWarnings("all")
 public class SQLScriptScenceCreator {
+
+    private static DBConnVO nowDbConnVO = null;
 
     private static TextField dbStatus = null;
     private static Boolean connStatus = false;
@@ -86,9 +89,14 @@ public class SQLScriptScenceCreator {
                 //测试连接是否通过
                 try {
                     FunctionProcessor.connDatabase(dbConnVO.getIp(), dbConnVO.getPort(), dbConnVO.getServername(), dbConnVO.getUsername(), dbConnVO.getPassword(), dbConnVO.getDbType());
+                    nowDbConnVO = dbConnVO ;
                     dbStatus.setText("成功");
                 } catch (Exception ex) {
                     dbStatus.setText("失败");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("信息提示");
+                    alert.setContentText(ex.getMessage());
+                    alert.showAndWait();
                     ex.fillInStackTrace();
                 }
             }
@@ -112,7 +120,27 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         loadDBButton.setOnAction(e -> {
-
+            try {
+                DBConnVO dbConnVO = SQLScriptFuncProcessor.ctrateLoadGrid();
+                if(dbConnVO==null){
+                    return;
+                }
+                //不为空
+                databaseField.setText(dbConnVO.getConnName());
+                //测试数据库连接
+                FunctionProcessor.connDatabase(dbConnVO.getIp(), dbConnVO.getPort(), dbConnVO.getServername(), dbConnVO.getUsername(), dbConnVO.getPassword(), dbConnVO.getDbType());
+                nowDbConnVO = dbConnVO;
+                dbStatus.setText("成功");
+            } catch (Exception ex) {
+                dbStatus.setText("失败");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            }finally {
+                FunctionProcessor.closeConn();
+            }
         });
 
         //连接状态
@@ -187,7 +215,16 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         execButton.setOnAction(e -> {
-
+            try{
+                // 根据业务插件全类名，导出sql脚本到桌面
+                SQLScriptFuncProcessor.exceListenerSql(listenerField.getText() , checkBox.isSelected(), nowDbConnVO );
+            }catch (Exception ex){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            }
         });
 
         // 创建一个水平分割线

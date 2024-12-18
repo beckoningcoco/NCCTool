@@ -34,7 +34,6 @@ public class UICreator {
             ExportNodeScenceCreator.createScence(stage , borderPane);
             borderPane.setTop(menuBar);
             exportNodescence = new Scene(borderPane, 800, 600);
-            exportNodescence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(exportNodescence);
             System.out.println("切换菜单 exportNodescence ");
 
@@ -45,7 +44,6 @@ public class UICreator {
             OpenApiTestScenceCreator.createScence(stage,openapiPane);
             openapiPane.setTop(menuBar);
             openapiScence = new Scene(openapiPane, 800, 600);
-            openapiScence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(openapiScence);
             System.out.println("切换菜单 openapiScence ");
         });
@@ -56,7 +54,6 @@ public class UICreator {
             SQLScriptScenceCreator.createScence(stage,openapiPane);
             openapiPane.setTop(menuBar);
             SQLScriptScence = new Scene(openapiPane, 800, 600);
-            SQLScriptScence.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setScene(SQLScriptScence);
             System.out.println("切换菜单 SQLScriptScence ");
         });
