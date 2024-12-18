@@ -14,11 +14,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
+
 public class NetPayTestScenceCreator {
 
     private static DBConnVO nowDbConnVO = null;
     private static TextField dbStatus = null;
     private static Boolean connStatus = false;
+
+    private static TextArea requrl = null ;
 
     public static void createScence(Stage stage, BorderPane netPayPane) {
 
@@ -189,19 +193,17 @@ public class NetPayTestScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         netTestButton.setOnAction(e -> {
-
             try{
-                NetPayTestFuncProcessor.postSuccessSend(netTestField.getText(),nowDbConnVO);
+                String url = NetPayTestFuncProcessor.postSuccessSend(netTestField.getText(), nowDbConnVO);
+                requrl.setText(url);
             }catch (Exception ex){
                 ex.fillInStackTrace();
             }finally {
                 FunctionProcessor.closeConn();
             }
-
-
         });
 
-        // 支付成功
+        // 支付失败
         Button netTestButton2 = new Button("支付失败");
         netTestButton2.setStyle(
                 "-fx-background-color: #f1f1f1; " + // 蓝色背景
@@ -218,12 +220,29 @@ public class NetPayTestScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         netTestButton2.setOnAction(e -> {
-
-
+            try{
+                String url = NetPayTestFuncProcessor.postFailSend(netTestField.getText(), nowDbConnVO);
+                requrl.setText(url);
+            }catch (Exception ex){
+                ex.fillInStackTrace();
+            }finally {
+                FunctionProcessor.closeConn();
+            }
         });
+        HBox requrlBox = new HBox(10);
+        // 创建一个 JTextArea 用于多行文本输入
+        TextArea textArea = new TextArea();
+        requrl = textArea ;
+        textArea.setTranslateX(130);
+        textArea.setPromptText("调用url");
+        textArea.setPrefHeight(200);
+        textArea.setWrapText(true); // 允许文本换行
+
+
+        requrlBox.getChildren().addAll(textArea);
         netTestBox.getChildren().addAll(netTestLabel,netTestField,netTestButton,netTestButton2);
         databaseBox.getChildren().addAll(databaseLabel, databaseField, addDBButton, loadDBButton, dbstatusLabel, dbstatusField);
-        vbox.getChildren().addAll(titleBox,databaseBox,separator,netTestBox);
+        vbox.getChildren().addAll(titleBox,databaseBox,separator,netTestBox,requrlBox);
         netPayPane.setCenter(vbox);
     }
 }
