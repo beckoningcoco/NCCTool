@@ -14,8 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.*;
 
+@SuppressWarnings("all")
 public class NetPayTestScenceCreator {
 
     private static DBConnVO nowDbConnVO = null;
@@ -23,6 +23,8 @@ public class NetPayTestScenceCreator {
     private static Boolean connStatus = false;
 
     private static TextArea requrl = null ;
+
+    private  static  TextField ipfiled = null ;
 
     public static void createScence(Stage stage, BorderPane netPayPane) {
 
@@ -165,6 +167,18 @@ public class NetPayTestScenceCreator {
         // 创建一个水平分割线
         Separator separator = new Separator();
 
+        HBox ipBox = new HBox(10);
+        ipBox.setTranslateX(5);
+        Label ipLabel = new Label(" ip:port ");
+        ipLabel.setStyle(" -fx-pref-width: 120px;-fx-padding: 5;-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Tahoma';");
+        TextField ipField = new TextField();
+        ipfiled = ipField ;
+
+        ipField.setTranslateY(1);
+        ipField.setPrefHeight(20);
+        ipField.setPrefWidth(180);
+        ipField.setPromptText("开发/测试环境ip");
+
         // 根据结算单号 进行模拟下载支付成功和支付失败
         HBox netTestBox = new HBox(10);
         netTestBox.setTranslateX(5);
@@ -194,7 +208,7 @@ public class NetPayTestScenceCreator {
         );
         netTestButton.setOnAction(e -> {
             try{
-                String url = NetPayTestFuncProcessor.postSuccessSend(netTestField.getText(), nowDbConnVO);
+                String url = NetPayTestFuncProcessor.postSuccessSend(netTestField.getText(), nowDbConnVO,ipfiled.getText());
                 requrl.setText(url);
             }catch (Exception ex){
                 ex.fillInStackTrace();
@@ -221,7 +235,7 @@ public class NetPayTestScenceCreator {
         );
         netTestButton2.setOnAction(e -> {
             try{
-                String url = NetPayTestFuncProcessor.postFailSend(netTestField.getText(), nowDbConnVO);
+                String url = NetPayTestFuncProcessor.postFailSend(netTestField.getText(), nowDbConnVO,ipfiled.getText());
                 requrl.setText(url);
             }catch (Exception ex){
                 ex.fillInStackTrace();
@@ -240,9 +254,10 @@ public class NetPayTestScenceCreator {
 
 
         requrlBox.getChildren().addAll(textArea);
+        ipBox.getChildren().addAll(ipLabel,ipField);
         netTestBox.getChildren().addAll(netTestLabel,netTestField,netTestButton,netTestButton2);
         databaseBox.getChildren().addAll(databaseLabel, databaseField, addDBButton, loadDBButton, dbstatusLabel, dbstatusField);
-        vbox.getChildren().addAll(titleBox,databaseBox,separator,netTestBox,requrlBox);
+        vbox.getChildren().addAll(titleBox,databaseBox,separator,ipBox,netTestBox,requrlBox);
         netPayPane.setCenter(vbox);
     }
 }

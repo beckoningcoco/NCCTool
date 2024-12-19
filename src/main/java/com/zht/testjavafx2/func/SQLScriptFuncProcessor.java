@@ -355,20 +355,24 @@ public class SQLScriptFuncProcessor {
         // INSERT 语句模板
         StringBuffer insertSQLTemplate = new StringBuffer();
         insertSQLTemplate.append(" INSERT INTO PUB_EVENTLISTENER  ");
-        insertSQLTemplate.append(" (COMP,DR,EVENTTYPECODE,EVENTTYPENAME,EVENTTYPENAME2,EVENTTYPENAME3,EVENTTYPENAME4,EVENTTYPENAME5,EVENTTYPENAME6,NOTE,OWNER,PK_EVENTTYPE,SOURCEID,SOURCENAME,SOURCENAME2,SOURCENAME3,SOURCENAME4,SOURCENAME5,SOURCENAME6,TS)  ");
+        insertSQLTemplate.append(" (COMP,DR,ENABLED,IMPLCLASSNAME,INDUSTRYTYPE,LISTENERTYPE,LOCALTYPE,NAME,NAME2,NAME3,NAME4,NAME5,NAME6,NOTE,OPERINDEX,OWNER,PK_EVENTLISTENER,PK_EVENTTYPE,TS)   ");
         insertSQLTemplate.append(" VALUES (%s) ");
         List<String> insertStatements = selectToInsert(selectSQL, dbConnVO, insertSQLTemplate.toString());
         //导出事件源
         if (selected) {
-           StringBuffer buf = new StringBuffer();
+            StringBuffer buf = new StringBuffer();
             buf.append(" SELECT * FROM PUB_EVENTTYPE pe WHERE PK_EVENTTYPE IN (SELECT PK_EVENTTYPE FROM PUB_EVENTLISTENER  ");
-            buf.append(" WHERE dr = 0 and  implclassname = '"+clazzName+"' ");
+            buf.append(" WHERE dr = 0 and  implclassname = '" + clazzName + "' ) ");
 
             StringBuffer listenerTypeTemplate = new StringBuffer();
-            listenerTypeTemplate.append(" INSERT INTO PUB_EVENTLISTENER  ");
+            listenerTypeTemplate.append(" INSERT INTO PUB_EVENTTYPE  ");
             listenerTypeTemplate.append(" (COMP,DR,EVENTTYPECODE,EVENTTYPENAME,EVENTTYPENAME2,EVENTTYPENAME3,EVENTTYPENAME4,EVENTTYPENAME5,EVENTTYPENAME6,NOTE,OWNER,PK_EVENTTYPE,SOURCEID,SOURCENAME,SOURCENAME2,SOURCENAME3,SOURCENAME4,SOURCENAME5,SOURCENAME6,TS)  ");
             listenerTypeTemplate.append(" VALUES (%s) ");
 
+            List<String> eventypeStatements = selectToInsert(buf.toString(), dbConnVO, listenerTypeTemplate.toString());
+            if (eventypeStatements != null && eventypeStatements.size() > 0) {
+                insertStatements.addAll(eventypeStatements);
+            }
         }
         //输出到 桌面目录
         String tarurl = "C:/Users/Administrator/Desktop/listenersSQL.sql";

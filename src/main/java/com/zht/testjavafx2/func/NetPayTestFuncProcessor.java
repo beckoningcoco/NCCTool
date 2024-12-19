@@ -31,7 +31,7 @@ public class NetPayTestFuncProcessor {
 
 
 
-    public static String postSuccessSend(String billcode , DBConnVO dbConnVO) throws SQLException {
+    public static String postSuccessSend(String billcode , DBConnVO dbConnVO,String ip) throws SQLException {
 
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
@@ -115,7 +115,7 @@ public class NetPayTestFuncProcessor {
 
 
         //拼接 调用路径
-              urlStr = "http://127.0.0.1:8082/api/gateway?"
+              urlStr = "http://"+ip+"/api/gateway?"
                 +       "app_id="+app_id+"&"
                 +       "secret_code="+secret_code+"&"
                 +       "timestamp="+timestamp+"&"
@@ -176,7 +176,7 @@ public class NetPayTestFuncProcessor {
 
     }
 
-    public static String postFailSend(String billcode, DBConnVO dbConnVO) throws SQLException {
+    public static String postFailSend(String billcode, DBConnVO dbConnVO ,String ip) throws SQLException {
        transaction_type = "public_payment";
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
@@ -248,7 +248,7 @@ public class NetPayTestFuncProcessor {
 
 
             //拼接 调用路径
-            urlStr = "http://127.0.0.1:8082/api/gateway?"
+            urlStr = "http://"+ip+"/api/gateway?"
                     +       "app_id="+app_id+"&"
                     +       "secret_code="+secret_code+"&"
                     +       "timestamp="+timestamp+"&"

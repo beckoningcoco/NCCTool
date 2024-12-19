@@ -218,12 +218,18 @@ public class SQLScriptScenceCreator {
             try{
                 // 根据业务插件全类名，导出sql脚本到桌面
                 SQLScriptFuncProcessor.exceListenerSql(listenerField.getText() , checkBox.isSelected(), nowDbConnVO );
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("信息提示");
+                alert.setContentText("导出脚本成功！");
+                alert.showAndWait();
             }catch (Exception ex){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("信息提示");
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
                 ex.fillInStackTrace();
+            }finally {
+                FunctionProcessor.closeConn();
             }
         });
 
