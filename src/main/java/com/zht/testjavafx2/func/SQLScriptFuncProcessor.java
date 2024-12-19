@@ -1,5 +1,6 @@
 package com.zht.testjavafx2.func;
 
+import com.zht.testjavafx2.nomal.ConfigSysintParam;
 import com.zht.testjavafx2.openapi.FileUtil;
 import com.zht.testjavafx2.openapi.XmlConverter;
 import com.zht.testjavafx2.vo.DBConnVO;
@@ -375,7 +376,7 @@ public class SQLScriptFuncProcessor {
             }
         }
         //输出到 桌面目录
-        String tarurl = "C:/Users/Administrator/Desktop/listenersSQL.sql";
+        String tarurl = ConfigSysintParam.SQLTARGETURL + "/listenersSQL.sql";
         // 将所有的 INSERT 语句写入到 .sql 文件中
         writeInsertStatementsToFile(insertStatements, tarurl);
         System.out.println("导出业务插件脚本成功！");
@@ -385,7 +386,7 @@ public class SQLScriptFuncProcessor {
         // 确保输出目录存在
         Files.createDirectories(Paths.get(filePath).getParent());
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for (String statement : insertStatements) {
                 writer.write(statement);
                 writer.newLine(); // 添加换行符以分隔每个语句
@@ -439,4 +440,120 @@ public class SQLScriptFuncProcessor {
         return input.replace("'", "''");
     }
 
+    //导出自定义档案的脚本
+    public static void execDefdocSQL(String code, DBConnVO nowDbConnVO) throws SQLException, IOException {
+
+        List<String> sqlList = new ArrayList<>();
+
+        String sql1 = "select * from bd_defdoc where pk_defdoclist in (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))";
+        String sql2 = "select * from bd_mode_selected where mdclassid in(select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))";
+        String sql3 = "select * from bd_mode_all where mdclassid in (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))";
+        String sql4 = "select * from bd_defdoclist where code in ('" + code + "')";
+        String sql5 = "select * from bd_refinfo  where reserv3 in ('" + code + "')";
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("BD_DEFDOC", sql1);
+        map.put("BD_MODE_SELECTED", sql2);
+        map.put("BD_MODE_ALL", sql3);
+        map.put("BD_DEFDOCLIST", sql4);
+        map.put("BD_REFINFO", sql5);
+
+        Connection conn = FunctionProcessor.connDatabase(nowDbConnVO.getIp(), nowDbConnVO.getPort(), nowDbConnVO.getServername(), nowDbConnVO.getUsername(), nowDbConnVO.getPassword(), nowDbConnVO.getDbType());
+
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            sqlList.addAll(generateInsertStatements(conn, entry));
+        }
+
+        //输出到 桌面目录
+        String tarurl = ConfigSysintParam.SQLTARGETURL + "/defdocSQL.sql";
+        // 将所有的 INSERT 语句写入到 .sql 文件中
+        writeInsertStatementsToFile(sqlList, tarurl);
+
+    }
+
+    private static List<String> generateInsertStatements(Connection conn, Map.Entry<String, String> entry) throws SQLException {
+        List<String> ret = new ArrayList<>();
+        String tableName = entry.getKey();
+        String sql = entry.getValue();
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+
+        while (rs.next()) {
+            StringBuilder insertStmt = new StringBuilder("INSERT INTO " + tableName + " (");
+            List<String> values = new ArrayList<>();
+
+            for (int i = 1; i <= columnCount; i++) {
+                if (i > 1) {
+                    insertStmt.append(", ");
+                }
+                insertStmt.append(rsmd.getColumnName(i));
+
+                Object value = rs.getObject(i);
+                String formattedValue = formatValue(value, rsmd.getColumnType(i));
+                values.add(formattedValue);
+            }
+
+            insertStmt.append(") VALUES (").append(String.join(", ", values)).append(");");
+            ret.add(insertStmt.toString());
+        }
+        return ret;
+    }
+
+    private static String formatValue(Object value, int sqlType) {
+        if (value == null) return "NULL";
+
+        switch (sqlType) {
+            case Types.VARCHAR:
+            case Types.CHAR:
+            case Types.LONGVARCHAR:
+                return "'" + value.toString().replace("'", "''") + "'";
+            case Types.DATE:
+            case Types.TIMESTAMP:
+                return "TIMESTAMP '" + ((Timestamp) value).toLocalDateTime() + "'";
+            case Types.NUMERIC:
+            case Types.DECIMAL:
+            case Types.INTEGER:
+            case Types.SMALLINT:
+            case Types.BIGINT:
+            case Types.FLOAT:
+            case Types.REAL:
+            case Types.DOUBLE:
+                return value.toString();
+            default:
+                // Handle other types as needed
+                return "'" + value.toString().replace("'", "''") + "'";
+        }
+    }
+
+    //导出后台任务的脚本
+    public static void execPluginsSQL(String code, DBConnVO nowDbConnVO) throws SQLException, IOException {
+        List<String> pluginsList = new ArrayList<>();
+
+        Map<String, String> map = new HashMap<>();
+        String sql1 = "select * from pub_alerttypeconfig where pk_alertregistry in(select pk_alertregistry from pub_alertregistry where pk_alerttype in(select pk_alerttype from pub_alerttype where busi_plugin in('" + code + "')))";
+        String sql2 = "select * from pub_alertregistry where pk_alerttype in(select pk_alerttype from pub_alerttype where busi_plugin in('" + code + "'))";
+        String sql3 = "select * from pub_alerttype_b where pk_alerttype in(select pk_alerttype from pub_alerttype where busi_plugin in('" + code + "'))";
+        String sql4 = "select * from pub_alerttype  where busi_plugin in('" + code + "')";
+
+        map.put("pub_alerttypeconfig", sql1);
+        map.put("pub_alertregistry", sql2);
+        map.put("pub_alerttype_b", sql3);
+        map.put("pub_alerttype", sql4);
+
+        Connection conn = FunctionProcessor.connDatabase(nowDbConnVO.getIp(), nowDbConnVO.getPort(), nowDbConnVO.getServername(), nowDbConnVO.getUsername(), nowDbConnVO.getPassword(), nowDbConnVO.getDbType());
+
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            pluginsList.addAll(generateInsertStatements(conn, entry));
+        }
+
+        //输出到 桌面目录
+        String tarurl = ConfigSysintParam.SQLTARGETURL + "/pluginSQL.sql";
+        // 将所有的 INSERT 语句写入到 .sql 文件中
+        writeInsertStatementsToFile(pluginsList, tarurl);
+    }
 }

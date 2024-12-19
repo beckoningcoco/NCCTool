@@ -89,7 +89,7 @@ public class SQLScriptScenceCreator {
                 //测试连接是否通过
                 try {
                     FunctionProcessor.connDatabase(dbConnVO.getIp(), dbConnVO.getPort(), dbConnVO.getServername(), dbConnVO.getUsername(), dbConnVO.getPassword(), dbConnVO.getDbType());
-                    nowDbConnVO = dbConnVO ;
+                    nowDbConnVO = dbConnVO;
                     dbStatus.setText("成功");
                 } catch (Exception ex) {
                     dbStatus.setText("失败");
@@ -122,7 +122,7 @@ public class SQLScriptScenceCreator {
         loadDBButton.setOnAction(e -> {
             try {
                 DBConnVO dbConnVO = SQLScriptFuncProcessor.ctrateLoadGrid();
-                if(dbConnVO==null){
+                if (dbConnVO == null) {
                     return;
                 }
                 //不为空
@@ -138,7 +138,7 @@ public class SQLScriptScenceCreator {
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
                 ex.fillInStackTrace();
-            }finally {
+            } finally {
                 FunctionProcessor.closeConn();
             }
         });
@@ -215,20 +215,23 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         execButton.setOnAction(e -> {
-            try{
+            try {
                 // 根据业务插件全类名，导出sql脚本到桌面
-                SQLScriptFuncProcessor.exceListenerSql(listenerField.getText() , checkBox.isSelected(), nowDbConnVO );
+                if (StringUtils.isBlank(listenerField.getText())) {
+                    return;
+                }
+                SQLScriptFuncProcessor.exceListenerSql(listenerField.getText(), checkBox.isSelected(), nowDbConnVO);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("信息提示");
                 alert.setContentText("导出脚本成功！");
                 alert.showAndWait();
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("信息提示");
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
                 ex.fillInStackTrace();
-            }finally {
+            } finally {
                 FunctionProcessor.closeConn();
             }
         });
@@ -265,6 +268,25 @@ public class SQLScriptScenceCreator {
         );
         execdefButton.setOnAction(e -> {
 
+            try {
+                if (StringUtils.isBlank(defdocField.getText())) {
+                    return;
+                }
+                SQLScriptFuncProcessor.execDefdocSQL(defdocField.getText(), nowDbConnVO);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("信息提示");
+                alert.setContentText("导出脚本成功！");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            } finally {
+                FunctionProcessor.closeConn();
+            }
+
         });
 
         // 创建一个水平分割线
@@ -278,7 +300,7 @@ public class SQLScriptScenceCreator {
         pluginField.setTranslateY(2);
         pluginField.setPrefHeight(24);
         pluginField.setPrefWidth(120);
-        pluginField.setPromptText("自定义档案List编码");
+        pluginField.setPromptText("后台任务全类名");
 
         //导出自定义档案脚本到桌面
         Button execpluButton = new Button("导出至桌面");
@@ -298,6 +320,24 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         execpluButton.setOnAction(e -> {
+            try {
+                if (StringUtils.isBlank(pluginField.getText())) {
+                    return;
+                }
+                SQLScriptFuncProcessor.execPluginsSQL(pluginField.getText(), nowDbConnVO);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("信息提示");
+                alert.setContentText("导出脚本成功！");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            } finally {
+                FunctionProcessor.closeConn();
+            }
 
         });
         // 创建一个水平分割线
@@ -345,7 +385,7 @@ public class SQLScriptScenceCreator {
 
         // 导出单据转换规则
         HBox ruleBox = new HBox(5);
-        Label ruleLabel = new Label(" 生成扩表字段语句 ");
+        Label ruleLabel = new Label(" 导出单据转换规则 ");
         ruleLabel.setStyle(" -fx-pref-width: 140px;-fx-padding: 5;-fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Tahoma';");
         TextField ruleSrcBillTypeField = new TextField();
         ruleSrcBillTypeField.setTranslateY(2);
