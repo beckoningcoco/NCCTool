@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -595,7 +596,61 @@ public class SQLScriptFuncProcessor {
     }
 
     //生成扩表语句
-    public static void execExtendLengthSQL() {
+    public static void execExtendLengthSQL(String tableName, String filedName, String lengtn) throws IOException {
+        tableName = tableName.toLowerCase();
+        filedName = filedName.toLowerCase();
 
+        StringBuffer buf = new StringBuffer();
+        buf.append(" alter table " + tableName + " modify  " + filedName + " VARCHAR2(" + lengtn + ") ; \r\n");
+        buf.append(" update md_column set columnlength = " + lengtn + "  where tableid='" + tableName + "' and id in ('" + tableName + "@@@" + filedName + "'); \r\n ");
+        buf.append(" update md_property set attrlength= " + lengtn + "  where name in ('" + filedName + "') and classid=(select id from md_class where defaulttablename='" + tableName + "'); \r\n");
+
+        //输出到 桌面目录
+        String tarurl = ConfigSysintParam.SQLTARGETURL + "/extendFiledSQL.sql";
+        // 将所有的 INSERT 语句写入到 .sql 文件中
+        List<String> list = new ArrayList<>();
+        list.add(buf.toString());
+        writeInsertStatementsToFile(list, tarurl);
+
+    }
+
+    //导出单据转换规则
+    public static void execVOChangeSQL(DBConnVO nowDbConnVO, String g1, String g2, String f1, String f2) throws SQLException, IOException {
+
+        //SELECT * FROM PUB_VOCHANGE  WHERE dr = 0 AND SRC_BILLTYPE ='' AND SRC_TRANSTYPE ='' AND DEST_BILLTYPE = '' AND DEST_TRANSTYPE =''
+        StringBuffer buf = new StringBuffer();
+        String sql1 = " select * from pub_vochange  where dr = 0 ";
+        if(StringUtils.isNotBlank(g1)){
+            buf.append(" and src_billtype = '"+g1+"' ");
+        }
+        if(StringUtils.isNotBlank(g2)){
+            buf.append(" and src_transtype = '"+g2+"' ");
+        }
+        if(StringUtils.isNotBlank(f1)){
+            buf.append(" and dest_billtype = '"+f1+"' ");
+        }
+        if(StringUtils.isNotBlank(f2)){
+            buf.append(" and dest_transtype = '"+f2+"' ");
+        }
+
+        String sql = sql1 + buf.toString();
+
+        String sql2 = " select * from  pub_vochange_b where dr = 0 and pk_vochange in (select pk_vochange from pub_vochange where dr = 0 "+buf.toString()+")";
+
+        List<String> rulesList = new ArrayList<>();
+        Map<String, String> map = new HashMap<>();
+        map.put("PUB_VOCHANGE",sql);
+        map.put("PUB_VOCHANGE_B",sql2);
+
+        Connection conn = FunctionProcessor.connDatabase(nowDbConnVO.getIp(), nowDbConnVO.getPort(), nowDbConnVO.getServername(), nowDbConnVO.getUsername(), nowDbConnVO.getPassword(), nowDbConnVO.getDbType());
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            rulesList.addAll(generateInsertStatements(conn, entry));
+        }
+
+        //输出到 桌面目录
+        String tarurl = ConfigSysintParam.SQLTARGETURL + "/voChangeSQL.sql";
+        // 将所有的 INSERT 语句写入到 .sql 文件中
+        writeInsertStatementsToFile(rulesList, tarurl);
     }
 }

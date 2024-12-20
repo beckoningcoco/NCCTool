@@ -387,7 +387,7 @@ public class SQLScriptScenceCreator {
                 if (StringUtils.isBlank(extendField.getText()) || StringUtils.isBlank(extendfiledField.getText()) || StringUtils.isBlank(lengthfiledField.getText())) {
                     return;
                 }
-                SQLScriptFuncProcessor.execExtendLengthSQL();
+                SQLScriptFuncProcessor.execExtendLengthSQL(extendField.getText(), extendfiledField.getText(), lengthfiledField.getText());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("信息提示");
                 alert.setContentText("导出脚本成功！");
@@ -433,7 +433,7 @@ public class SQLScriptScenceCreator {
         ruleTarTradeTypeField.setTranslateY(2);
         ruleTarTradeTypeField.setPrefHeight(24);
         ruleTarTradeTypeField.setPrefWidth(90);
-        ruleTarTradeTypeField.setPromptText("目的单据类型");
+        ruleTarTradeTypeField.setPromptText("目的交易类型");
 
 
         //导出单据转换规则
@@ -454,6 +454,30 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         ruleButton.setOnAction(e -> {
+            try {
+                String g1 = ruleSrcBillTypeField.getText();
+                String g2 = ruleSrcTradeTypeField.getText();
+                String f1 = ruleTarBillTypeField.getText();
+                String f2 = ruleTarTradeTypeField.getText();
+                if ((StringUtils.isBlank(g1) && StringUtils.isBlank(g2))
+                        || (StringUtils.isBlank(f1) && StringUtils.isBlank(f2))) {
+                    return;
+                }
+                SQLScriptFuncProcessor.execVOChangeSQL(nowDbConnVO, g1, g2, f1, f2);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("信息提示");
+                alert.setContentText("导出脚本成功！");
+                alert.showAndWait();
+
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            } finally {
+                FunctionProcessor.closeConn();
+            }
 
         });
 
@@ -461,7 +485,7 @@ public class SQLScriptScenceCreator {
         Separator Lastseparator = new Separator();
 
         ruleBox.getChildren().addAll(ruleLabel, ruleSrcBillTypeField, ruleSrcTradeTypeField, ruleTarBillTypeField, ruleTarTradeTypeField, ruleButton);
-        extendBox.getChildren().addAll(extendLabel, extendField, extendfiledField, extendButton);
+        extendBox.getChildren().addAll(extendLabel, extendField, extendfiledField, lengthfiledField, extendButton);
         pluginBox.getChildren().addAll(pluginLabel, pluginField, execpluButton);
         defdocBox.getChildren().addAll(defdocLabel, defdocField, execdefButton);
         listenerBox.getChildren().addAll(listenerLabel, listenerField, checkBox, execButton);
