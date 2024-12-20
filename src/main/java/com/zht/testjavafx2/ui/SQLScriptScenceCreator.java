@@ -359,6 +359,12 @@ public class SQLScriptScenceCreator {
         extendfiledField.setPrefWidth(100);
         extendfiledField.setPromptText("字段名");
 
+        TextField lengthfiledField = new TextField();
+        lengthfiledField.setTranslateY(2);
+        lengthfiledField.setPrefHeight(24);
+        lengthfiledField.setPrefWidth(100);
+        lengthfiledField.setPromptText("长度");
+
         //导出扩展字段脚本
         Button extendButton = new Button("导出至桌面");
         extendButton.setTranslateX(25);
@@ -377,6 +383,24 @@ public class SQLScriptScenceCreator {
                         "-fx-cursor: hand;" // 鼠标悬停时变为手型指针
         );
         extendButton.setOnAction(e -> {
+            try {
+                if (StringUtils.isBlank(extendField.getText()) || StringUtils.isBlank(extendfiledField.getText()) || StringUtils.isBlank(lengthfiledField.getText())) {
+                    return;
+                }
+                SQLScriptFuncProcessor.execExtendLengthSQL();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("信息提示");
+                alert.setContentText("导出脚本成功！");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("信息提示");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                ex.fillInStackTrace();
+            } finally {
+                FunctionProcessor.closeConn();
+            }
 
         });
 

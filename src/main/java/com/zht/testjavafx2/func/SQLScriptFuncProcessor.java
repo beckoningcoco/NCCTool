@@ -450,6 +450,25 @@ public class SQLScriptFuncProcessor {
         String sql3 = "select * from bd_mode_all where mdclassid in (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))";
         String sql4 = "select * from bd_defdoclist where code in ('" + code + "')";
         String sql5 = "select * from bd_refinfo  where reserv3 in ('" + code + "')";
+        String sql6 = "SELECT * FROM bd_userdefruleref WHERE REFCLASS = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql7 = " SELECT * FROM bd_userdefrule WHERE pk_userdefrule = (SELECT PK_USERDEFRULE FROM bd_userdefruleref WHERE REFCLASS =(select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))) ";
+        String sql8 = " SELECT * FROM pub_bcr_nbcr  WHERE METAID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql9 = " SELECT * FROM bd_uniquerule WHERE MDCLASSID =(select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql10 = " SELECT * FROM bd_uniquerule_item WHERE PK_RULE IN (SELECT PK_RULE FROM bd_uniquerule WHERE MDCLASSID =(select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ) ";
+        String sql11 = " SELECT * FROM sm_op_busiop WHERE PK_OPERATION in (SELECT PK_RES_OPERATION FROM sm_res_operation WHERE RESOURCEID =  (SELECT PK_PERMISSION_RES FROM sm_permission_res  WHERE MDID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))) AND OPERATIONCODE = 'operate') ";
+        String sql12 = " SELECT * FROM sm_rule_type WHERE OWNRESOURCE = ((SELECT PK_PERMISSION_RES FROM sm_permission_res  WHERE MDID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) )) ";
+        String sql13 = " SELECT * FROM sm_res_operation WHERE RESOURCEID =  (SELECT PK_PERMISSION_RES FROM sm_permission_res  WHERE MDID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))) ";
+        String sql14 = " SELECT * FROM sm_permission_res  WHERE MDID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql16 = " SELECT * FROM md_attr_power  WHERE BEANID = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql17 = " SELECT * FROM md_busiop WHERE OWNERTYPE =(select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql18 = " SELECT * FROM md_component  \n" +
+                "WHERE name = 'bo_Defdoc-'||(SELECT code FROM BD_DEFDOCLIST WHERE pk_defdoclist = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))) \n" +
+                "OR name = 'Defdoc-'||(SELECT code FROM BD_DEFDOCLIST WHERE pk_defdoclist = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "'))) ";
+        String sql19 = " SELECT *  FROM md_db_relation  WHERE name like 'Defdoc-'||(SELECT code FROM BD_DEFDOCLIST WHERE pk_defdoclist = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')))||'%'  ";
+        String sql20 = " SELECT *  FROM md_association WHERE STARTBEANID  = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql21 = " SELECT *  FROM md_bizItfMap  WHERE classid = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql22 = " SELECT *  FROM md_property   WHERE CLASSID  = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
+        String sql23 = " SELECT *  FROM md_class   WHERE id = (select pk_defdoclist from bd_defdoclist where code in ('" + code + "')) ";
 
         HashMap<String, String> map = new HashMap<>();
         map.put("BD_DEFDOC", sql1);
@@ -457,6 +476,24 @@ public class SQLScriptFuncProcessor {
         map.put("BD_MODE_ALL", sql3);
         map.put("BD_DEFDOCLIST", sql4);
         map.put("BD_REFINFO", sql5);
+        map.put("BD_USERDEFRULEREF", sql6);
+        map.put("BD_USERDEFRULE", sql7);
+        map.put("PUB_BCR_NBCR", sql8);
+        map.put("BD_UNIQUERULE", sql9);
+        map.put("BD_UNIQUERULE_ITEM", sql10);
+        map.put("SM_OP_BUSIOP", sql11);
+        map.put("SM_RULE_TYPE", sql12);
+        map.put("SM_RES_OPERATION", sql13);
+        map.put("SM_PERMISSION_RES", sql14);
+        map.put("MD_ATTR_POWER", sql16);
+        map.put("MD_BUSIOP", sql17);
+        map.put("MD_COMPONENT", sql18);
+        map.put("MD_DB_RELATION", sql19);
+        map.put("MD_ASSOCIATION", sql20);
+        map.put("MD_BIZITFMAP", sql21);
+        map.put("MD_PROPERTY", sql22);
+        map.put("MD_CLASS", sql23);
+
 
         Connection conn = FunctionProcessor.connDatabase(nowDbConnVO.getIp(), nowDbConnVO.getPort(), nowDbConnVO.getServername(), nowDbConnVO.getUsername(), nowDbConnVO.getPassword(), nowDbConnVO.getDbType());
 
@@ -555,5 +592,10 @@ public class SQLScriptFuncProcessor {
         String tarurl = ConfigSysintParam.SQLTARGETURL + "/pluginSQL.sql";
         // 将所有的 INSERT 语句写入到 .sql 文件中
         writeInsertStatementsToFile(pluginsList, tarurl);
+    }
+
+    //生成扩表语句
+    public static void execExtendLengthSQL() {
+
     }
 }
