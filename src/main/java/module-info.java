@@ -13,6 +13,17 @@ module com.zht.testjavafx2 {
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.dataformat.xml;
     requires DmJdbcDriver18;
+    requires org.apache.poi.ooxml;
+    requires org.apache.xmlbeans;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml.schemas;
+    requires org.apache.poi.xwpf.converter.core;
+    requires org.apache.poi.xwpf.converter.xhtml;
+    requires org.apache.commons.codec;
+    requires java.base;
+
+    // JavaFX modules
+
     // 导出 vo 包给所有模块
     exports com.zht.testjavafx2.vo;
 

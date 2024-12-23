@@ -2,10 +2,17 @@ package com.zht.testjavafx2.func;
 
 import com.zht.testjavafx2.ui.ExportNodeScenceCreator;
 import com.zht.testjavafx2.ui.UICreator;
+import javafx.scene.Scene;
+import javafx.scene.web.WebView;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xwpf.converter.core.FileImageExtractor;
+import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
+import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,4 +267,70 @@ public class FunctionProcessor {
     }
 
 
+    //读取说明文档
+    public static Scene processUseDoc() {
+
+        // 创建 WebView 组件
+        WebView webView = new WebView();
+
+        // 设置场景
+        Scene scene = new Scene(webView, 800, 600);
+
+        try {
+            // 加载并转换 Word 文档为 HTML
+            InputStream resourceAsStream = OpenApiFuncProcessor.class.getResourceAsStream("/com/zht/testjavafx2/说明文档.docx");
+            // 创建临时文件
+            Path tempFilePath = Files.createTempFile("temp", ".tmp");
+            File tempFile = tempFilePath.toFile();
+            tempFile.deleteOnExit(); // 确保程序退出时删除临时文件
+
+            // 将输入流内容复制到临时文件
+            try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = resourceAsStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                resourceAsStream.close();
+            }
+            FileInputStream fileInputStream = new FileInputStream(tempFile);
+            XWPFDocument document = new XWPFDocument(fileInputStream);
+            // 使用 ByteArrayOutputStream 来接收转换后的 HTML 内容
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            XHTMLOptions options = XHTMLOptions.create();
+            options.setExtractor(new FileImageExtractor(tempFile.getParentFile()));
+            XHTMLConverter.getInstance().convert(document, outputStream, options);
+
+            // 加载 HTML 内容到 WebView
+            String htmlContent = outputStream.toString("UTF-8");
+            webView.getEngine().loadContent(htmlContent, "text/html");
+
+            document.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return scene;
+    }
+
+    public static FileInputStream convertResourceAsStreamToFileInputStream( InputStream inputStream) throws IOException {
+        // 创建临时文件
+        Path tempFilePath = Files.createTempFile("temp", ".tmp");
+        File tempFile = tempFilePath.toFile();
+        tempFile.deleteOnExit(); // 确保程序退出时删除临时文件
+
+        // 将输入流内容复制到临时文件
+        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } finally {
+            inputStream.close();
+        }
+
+        // 返回基于临时文件的 FileInputStream
+        return new FileInputStream(tempFile);
+    }
 }

@@ -1,5 +1,6 @@
 package com.zht.testjavafx2.ui;
 
+import com.zht.testjavafx2.func.FunctionProcessor;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -78,7 +79,16 @@ public class UICreator {
 
         menu.getItems().addAll(switchToScene1, switchToScene2,switchToScene3,switchToScene4);
         otherMenu.getItems().addAll(otherItem1, otherItem2);
-        menuBar.getMenus().addAll(menu,otherMenu);
+
+        //说明文档
+        Menu useMenu = new Menu("说明文档");
+        MenuItem useItem1 = new MenuItem("查看说明文档");
+        useMenu.getItems().add(useItem1);
+        useItem1.setOnAction(event -> {
+            Scene scene = FunctionProcessor.processUseDoc();
+            primaryStage.setScene(scene);
+        });
+        menuBar.getMenus().addAll(menu,otherMenu,useMenu);
 
         //创建  模拟网上支付 工具的界面
         BorderPane netPayPane = new BorderPane();

@@ -387,9 +387,12 @@ public class SQLScriptFuncProcessor {
         // 确保输出目录存在
         Files.createDirectories(Paths.get(filePath).getParent());
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath,true), "UTF-8"))) {
             for (String statement : insertStatements) {
                 writer.write(statement);
+                if(!statement.endsWith(";")){
+                    writer.write(";");
+                }
                 writer.newLine(); // 添加换行符以分隔每个语句
             }
         }
