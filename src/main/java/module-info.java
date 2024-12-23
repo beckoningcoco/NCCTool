@@ -13,14 +13,12 @@ module com.zht.testjavafx2 {
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.dataformat.xml;
     requires DmJdbcDriver18;
-    requires org.apache.poi.ooxml;
-    requires org.apache.xmlbeans;
-    requires org.apache.poi.poi;
-    requires org.apache.poi.ooxml.schemas;
-    requires org.apache.poi.xwpf.converter.core;
-    requires org.apache.poi.xwpf.converter.xhtml;
-    requires org.apache.commons.codec;
     requires java.base;
+    // 声明对 FlexMark Java 库的依赖
+    requires flexmark.all;
+    requires flexmark.util.data;
+    requires flexmark; // 自动模块名，对应于 flexmark-all-xxx.jar
+
 
     // JavaFX modules
 

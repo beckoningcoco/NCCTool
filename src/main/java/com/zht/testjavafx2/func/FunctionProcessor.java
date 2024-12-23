@@ -1,18 +1,26 @@
 package com.zht.testjavafx2.func;
 
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.MutableDataSet;
+import com.zht.testjavafx2.HelloApplication;
 import com.zht.testjavafx2.ui.ExportNodeScenceCreator;
-import com.zht.testjavafx2.ui.UICreator;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xwpf.converter.core.FileImageExtractor;
-import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
-import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -268,69 +276,33 @@ public class FunctionProcessor {
 
 
     //读取说明文档
-    public static Scene processUseDoc() {
+    public static Scene processUseDoc() throws IOException {
 
-        // 创建 WebView 组件
-        WebView webView = new WebView();
+        HBox hBox = new HBox(5);
+        Label label = new Label("请进入下面链接，参考使用文档");
+        label.setStyle(" -fx-pref-width: 300px;-fx-padding: 5;-fx-font-size: 20px; -fx-font-weight: bold; -fx-font-family: 'Tahoma';");
+        HBox hBox1 = new HBox(5);
+        hBox1.setTranslateY(30);
+        TextArea textArea = new TextArea();
 
-        // 设置场景
-        Scene scene = new Scene(webView, 800, 600);
+        // 设置字体样式
+        Font font = Font.font("Arial",  FontWeight.BOLD,FontPosture.ITALIC, 16);
+        textArea.setFont(font);
 
-        try {
-            // 加载并转换 Word 文档为 HTML
-            InputStream resourceAsStream = OpenApiFuncProcessor.class.getResourceAsStream("/com/zht/testjavafx2/说明文档.docx");
-            // 创建临时文件
-            Path tempFilePath = Files.createTempFile("temp", ".tmp");
-            File tempFile = tempFilePath.toFile();
-            tempFile.deleteOnExit(); // 确保程序退出时删除临时文件
+        textArea.setEditable(false);
+        textArea.setText("www.baidu.com");
+        textArea.setPrefHeight(60);
+        textArea.setPrefWidth(360);
 
-            // 将输入流内容复制到临时文件
-            try (OutputStream outputStream = new FileOutputStream(tempFile)) {
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                while ((bytesRead = resourceAsStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-            } finally {
-                resourceAsStream.close();
-            }
-            FileInputStream fileInputStream = new FileInputStream(tempFile);
-            XWPFDocument document = new XWPFDocument(fileInputStream);
-            // 使用 ByteArrayOutputStream 来接收转换后的 HTML 内容
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            XHTMLOptions options = XHTMLOptions.create();
-            options.setExtractor(new FileImageExtractor(tempFile.getParentFile()));
-            XHTMLConverter.getInstance().convert(document, outputStream, options);
+        hBox.getChildren().add(label);
+        hBox1.getChildren().add(textArea);
+        // 创建布局容器并将 WebView 添加进去
+        VBox vbox = new VBox();
+        vbox.getChildren().addAll(hBox,hBox1);
+        // 创建场景并设置舞台
+        Scene scene = new Scene(vbox, 800, 600);
 
-            // 加载 HTML 内容到 WebView
-            String htmlContent = outputStream.toString("UTF-8");
-            webView.getEngine().loadContent(htmlContent, "text/html");
-
-            document.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return scene;
     }
 
-    public static FileInputStream convertResourceAsStreamToFileInputStream( InputStream inputStream) throws IOException {
-        // 创建临时文件
-        Path tempFilePath = Files.createTempFile("temp", ".tmp");
-        File tempFile = tempFilePath.toFile();
-        tempFile.deleteOnExit(); // 确保程序退出时删除临时文件
-
-        // 将输入流内容复制到临时文件
-        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        } finally {
-            inputStream.close();
-        }
-
-        // 返回基于临时文件的 FileInputStream
-        return new FileInputStream(tempFile);
-    }
 }

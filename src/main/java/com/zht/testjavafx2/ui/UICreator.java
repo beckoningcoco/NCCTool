@@ -8,6 +8,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 @SuppressWarnings("all")
 public class UICreator {
 
@@ -85,7 +87,12 @@ public class UICreator {
         MenuItem useItem1 = new MenuItem("查看说明文档");
         useMenu.getItems().add(useItem1);
         useItem1.setOnAction(event -> {
-            Scene scene = FunctionProcessor.processUseDoc();
+            Scene scene = null;
+            try {
+                scene = FunctionProcessor.processUseDoc();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             primaryStage.setScene(scene);
         });
         menuBar.getMenus().addAll(menu,otherMenu,useMenu);

@@ -123,49 +123,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-
-
-        <!-- Apache POI Core -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
-        <!-- Apache POI OOXML Support for Word (.docx) -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
-        <!-- For converting DOCX to HTML -->
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>org.apache.poi.xwpf.converter.xhtml</artifactId>
-            <version>1.0.6</version> <!-- 确保使用最新稳定版本 -->
-        </dependency>
-
-        <!-- XMLBeans, required by poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>5.1.1</version>
-        </dependency>
-
-        <!-- Commons Codec, used by POI -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
-        </dependency>
-
         <!-- JavaFX dependencies (if not using JDK with built-in JavaFX) -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -176,6 +133,13 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
             <version>17.0.8</version>
+        </dependency>
+
+        <!-- FlexMark Java for Markdown parsing -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.64.0</version>
         </dependency>
 
     </dependencies>
